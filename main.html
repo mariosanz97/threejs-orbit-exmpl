@@ -50,34 +50,62 @@
             //CUBE
                 var object_cube = new THREE.Mesh( geometry, material ); //create cube
                 object_cube.position.x= -5
-                scene.add(object_cube); //add to scene
+                //scene.add(object_cube); //add to scene
             //CIRCLE
                 //#CircleGeometry- radio, seg radiales, angulo, angulo termina circulo
                 var object_circle= new THREE.Mesh(new THREE.CircleGeometry(2, 32, 0), material)
                 object_circle.position.x= 5
-                scene.add(object_circle)
+                //scene.add(object_circle)
 
-            //SPHERA
+            //SUN
                 //#SphereGeometry- radio, segmentos, seg altura
-                var object_esfera= new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), material)
-                object_esfera.position.x= 0
-                scene.add(object_esfera)
+                var object_sun= new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), material)
+                object_sun.position.x= 0
+                scene.add(object_sun)
 
+            //EARTH
+                var objet_earth =  new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), material);
+                scene.add(objet_earth)
+            //MARS
+                var objet_mars =  new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), material);
+                scene.add(objet_mars)
 
-            camera.position.z = 5; //colocamos camara diferente posicion al objeto
+            //LINE SHAPES
+                //shape earth orbit line
+                var shape = new THREE.Shape();
+                shape.moveTo(orbit, 0);
+                shape.absarc(0, 0, 10, 0, 2 * Math.PI, false); //
+                var spacedPoints = shape.createSpacedPointsGeometry(128);
+                spacedPoints.rotateX(THREE.Math.degToRad(-90));
+                var orbit = new THREE.Line(spacedPoints, new THREE.LineBasicMaterial({
+                    color: 0x00ff00
+                }));
+                scene.add(orbit);
 
+                //shape CUBE orbit line
+                var shape = new THREE.Shape();
+                shape.moveTo(orbit, 0);
+                shape.absarc(0, 0, 15, 0, 2 * Math.PI, false); //
+                var spacedPoints = shape.createSpacedPointsGeometry(128);
+                spacedPoints.rotateX(THREE.Math.degToRad(-90));
+                var orbit = new THREE.Line(spacedPoints, new THREE.LineBasicMaterial({
+                    color: 0x00ff00
+                }));
+                scene.add(orbit);
+            
+
+            camera.position.z = 5; //colocamos camara diferente posicion a objetos
+            
             //orbit control
             var control= new OrbitControls(camera, renderer.domElement)
             control.minDistance= 2
-            control.maxDistance= 15
+            control.maxDistance= 30
             control.enableZoom= true
             control.enableRotate= true
             control.enableDamping= true
-            control.dampingFactor= 0.5 //rotation speed
-            control.maxPolarAngle= Math.PI //rotation up move
+
             //resize screen
             window.addEventListener('resize', redimensionar)
-            
             function redimensionar(){
                 camera.aspect= window.innerWidth / window.innerHeight //get dimensions
                 camera.updateProjectionMatrix() //update objects formats
@@ -88,23 +116,36 @@
             //cube animation
             var i=0
             function animate() {
-                requestAnimationFrame( animate ); //too loop the function
-                //cube.rotation.x += 0.01;
-                //cube.rotation.y += 0.01;
+                
+                requestAnimationFrame( animate ) //too loop the function
 
+                object_sun.rotation.y += 0.01
+                object_sun.rotation.x += 0.01
+
+                var time = new Date() * 0.00025
+                objet_earth.rotation.y += 0.025
+                objet_earth.position.x = -Math.cos(time) * 10
+                objet_earth.position.z = -Math.sin(time) * 10
+
+                var time2 = new Date() * 0.0005
+                objet_mars.rotation.y += 0.025
+                objet_mars.position.x = -Math.cos(time2) * 15
+                objet_mars.position.z = -Math.sin(time2) * 15
+                
+                /*
                 scene.traverse(function(objets){
                     if(objets.isMesh === true ){ //si es objeto, no mover camara
                         objets.rotation.x += 0.01;
                         objets.rotation.y += 0.01;
                     }
-                })//gira todos los objetos
-
+                })//gira todos los objeto
+                */
                 
+
                 renderer.render( scene, camera ); //render all script
             }
-            
-            animate();
 
+            animate();
 		</script>
 	</body>
 </html>
