@@ -59,6 +59,15 @@
             control.enableDamping= true
             control.dampingFactor= 0.5 //rotation speed
             control.maxPolarAngle= Math.PI //rotation up move
+            //resize screen
+            window.addEventListener('resize', redimensionar)
+            
+            function redimensionar(){
+                camera.aspect= window.innerWidth / window.innerHeight //get dimensions
+                camera.updateProjectionMatrix() //update objects formats
+                renderer.setSize( window.innerWidth, window.innerHeight ); //resizable
+                renderer.render( scene, camera ); //render again
+            }
 
             //cube animation
             var i=0
