@@ -19,10 +19,12 @@
             scene.fog= new THREE.Fog(0x7656c, 0.1, 8) //color, distancia a camara, comiendo fog
             
             //bg texture img
+            /*
             var loader= new THREE.TextureLoader()
             loader.load("bg/space.jfif", function(texture){
                 scene.background= texture
             }) //ruta, funcion con textura
+            */
             
             ////////camera////////
             const camera = new THREE.PerspectiveCamera( 
@@ -50,13 +52,20 @@
 
             //orbit control
             var control= new OrbitControls(camera, renderer.domElement)
+            control.minDistance= 2
+            control.maxDistance= 15
+            control.enableZoom= true
+            control.enableRotate= true
+            control.enableDamping= true
+            control.dampingFactor= 0.5 //rotation speed
+            control.maxPolarAngle= Math.PI //rotation up move
 
             //cube animation
             var i=0
             function animate() {
                 requestAnimationFrame( animate ); //too loop the function
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
+                //cube.rotation.x += 0.01;
+                //cube.rotation.y += 0.01;
 
                 renderer.render( scene, camera ); //render all script
             }
