@@ -12,20 +12,74 @@
             import * as THREE from './build/three.module.js'       
             import { OrbitControls } from './OrbitControls.js'
             ////////scene////////
-            const scene = new THREE.Scene(); //create scene
-            scene.background= new THREE.Color(0x2a3b4c) //rojo, verde, azul
-            
+            const scene = new THREE.Scene();
+
+
+
+            // BACKGORUND
+                //scene.background= new THREE.Color(0x2a3b4c) //rojo, verde, azul
+
+                /*
+                var loader= new THREE.TextureLoader()
+                loader.load("wp.png", function(texture){
+                    scene.background= texture
+                }) //ruta, funcion con textura
+                */
+
+                /*
+                var starGeometry = new THREE.SphereGeometry(1000, 50, 50);
+                var material3 = new THREE.MeshBasicMaterial( {
+                    map: new THREE.TextureLoader().load( 'w.png' ),
+                    side: THREE.DoubleSide,
+                    shininess: 0
+                } );
+                var starField = new THREE.Mesh(starGeometry, material3);
+                scene.add(starField); 
+                */
+                
+                function getRandomStarField(numberOfStars, width, height) {
+                    var canvas = document.createElement('CANVAS');
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    var ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle="black";
+                    ctx.fillRect(0, 0, width, height);
+
+                    for (var i = 0; i < numberOfStars; ++i) {
+                        var radius = Math.random() * 3;
+                        var x = Math.floor(Math.random() * width);
+                        var y = Math.floor(Math.random() * height);
+
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+
+                        const months = ["03506f", "eb5e0b", "f7f7e8", "f7f7e8", "6930c3", "ffe227", "e27802","ffffff","ffffff","ffffff","ffffff"];
+                        const random = Math.floor(Math.random() * months.length);
+                        console.log(months[random]);
+
+                        ctx.fillStyle = "#"+months[random];
+                        ctx.fill();
+                    }
+
+                    var texture = new THREE.Texture(canvas);
+                    texture.needsUpdate = true;
+                    return texture;
+                };
+
+                var skyBox = new THREE.BoxGeometry(1000, 1000, 1000);
+                var skyBoxMaterial = new THREE.MeshBasicMaterial({
+                    map: getRandomStarField(500, 2500, 2500),
+                    side: THREE.BackSide
+                });
+                var sky = new THREE.Mesh(skyBox, skyBoxMaterial);
+                scene.add(sky);
+
             //nieblina effect
             //scene.fog= new THREE.Fog(0x7656c, 0.1, 8) //color, distancia a camara, comiendo fog
-            
-            //bg texture img
-            /*
-            var loader= new THREE.TextureLoader()
-            loader.load("bg/space.jfif", function(texture){
-                scene.background= texture
-            }) //ruta, funcion con textura
-            */
-            
+
             ////////camera////////
             const camera = new THREE.PerspectiveCamera( 
                 75, //angulo campo vision
@@ -102,7 +156,7 @@
             //orbit control
             var control= new OrbitControls(camera, renderer.domElement)
             control.minDistance= 2
-            control.maxDistance= 30
+            control.maxDistance= 100
             control.enableZoom= true
             control.enableRotate= true
             control.enableDamping= true
