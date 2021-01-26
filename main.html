@@ -8,23 +8,22 @@
         </style>
 	</head>
 	<body>
-		<script src="build/three.js"></script>
-		<script>
-            // Our Javascript will go here.
-
+		<script type="module">
+            import * as THREE from './build/three.module.js'       
+            import { OrbitControls } from './OrbitControls.js'
             ////////scene////////
             const scene = new THREE.Scene(); //create scene
             scene.background= new THREE.Color(0x2a3b4c) //rojo, verde, azul
-            /*
+            
             //nieblina effect
             scene.fog= new THREE.Fog(0x7656c, 0.1, 8) //color, distancia a camara, comiendo fog
             
             //bg texture img
             var loader= new THREE.TextureLoader()
-            loader.load("space.jfif", function(texture){
+            loader.load("bg/space.jfif", function(texture){
                 scene.background= texture
             }) //ruta, funcion con textura
-            */
+            
             ////////camera////////
             const camera = new THREE.PerspectiveCamera( 
                 75, //angulo campo vision
@@ -33,14 +32,6 @@
                 1000 //far
             );
             
-            const camera2 = new THREE.OrthographicCamera( 
-                5,
-                -5,
-                5, //near
-                -5 //far
-            );
-            var helper = new THREE.CameraHelper(camera2)
-            scene.add(helper)
 
             ////////render options////////
             const renderer = new THREE.WebGLRenderer();
@@ -52,11 +43,13 @@
             //material - #wireframe lines3d
             const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
             const cube = new THREE.Mesh( geometry, material ); //create cube
-            cube.position.z = -5
 
             //aadd to scene
             scene.add( cube );
-            //camera.position.z = 5; //colocamos camara diferente posicion al objeto
+            camera.position.z = 5; //colocamos camara diferente posicion al objeto
+
+            //orbit control
+            var control= new OrbitControls(camera, renderer.domElement)
 
             //cube animation
             var i=0
@@ -65,12 +58,7 @@
                 cube.rotation.x += 0.01;
                 cube.rotation.y += 0.01;
 
-                camera.lookAt(camera2.position)
-                camera.position.x= Math.cos(i) * 30
-                camera.position.z= Math.sin(i) * 30
-                i+=0.01
-
-                renderer.render( scene, camera2 ); //render all script
+                renderer.render( scene, camera ); //render all script
             }
 
             animate();
